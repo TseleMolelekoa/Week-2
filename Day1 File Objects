@@ -8,6 +8,7 @@ name: The name of the file.
 size: The size of the file in bytes.
 type: The MIME type of the file.
 lastModified: A timestamp representing the last modified time of the file.
+
 Example of creating a File object: 
 const file = new File(["Hello, World!"], "hello.txt", { type: "text/plain" });
 
@@ -56,3 +57,37 @@ When the reading is finished, we can access the result as:
 reader.result is the result (if successful)
 reader.error is the error (if failed).
 The most widely used events are for sure load and error.
+
+FileReader for blobs
+
+As mentioned in the chapter Blob, FileReadercan reads not just files, but any blobs.
+
+We can use it to convert a blob to another format:
+
+readAsArrayBuffer(blob) – to ArrayBuffer,
+readAsText(blob, [encoding]) – to string (an alternative to TextDecoder),
+readAsDataURL(blob) – to base64 data url.
+FileReaderSync is available inside Web Workers
+
+For Web Workers, there also exists a synchronous variant of FileReader, called FileReaderSync.
+
+Its reading methods read* do not generate events, but rather return a result, as regular functions do.
+
+That’s only inside a Web Worker though, because delays in synchronous calls, which are possible while reading from files, in Web Workers are less important. They do not affect the page.
+FileReader is a JavaScript object that provides an asynchronous way to read the contents of files or blobs (binary large objects). It's commonly used in web applications for tasks involving file handling and data manipulation.
+
+
+FETCH
+
+fetch() is a modern web API in JavaScript used for making network requests (e.g., fetching data from an API). It provides a more powerful and flexible feature set than the older XMLHttpRequest.
+Important Concepts:
+Promises: fetch() returns a Promise that resolves to the Response object representing the response to the request.
+
+Chaining: .then() and .catch() are used to handle the asynchronous nature of the fetch operation. You can chain multiple .then() to perform operations on the response data, and .catch() to handle errors.
+
+Response Object: The Response object represents the response to the request. You can check the status, and headers, and parse the body in various formats (JSON, text, etc.).
+
+JSON Parsing: The example above uses .json() to parse the response body as JSON. Other methods like .text() and .blob() can be used to handle different types of response bodies.
+
+Handling Headers: fetch() allows you to handle request and response headers, enabling you to send custom headers for authentication or other purpose
+fetch() is widely used in modern web development for interacting with APIs and fetching data asynchronously, making it a fundamental tool for creating dynamic and interactive web applications.
