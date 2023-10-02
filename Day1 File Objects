@@ -91,3 +91,27 @@ JSON Parsing: The example above uses .json() to parse the response body as JSON.
 
 Handling Headers: fetch() allows you to handle request and response headers, enabling you to send custom headers for authentication or other purpose
 fetch() is widely used in modern web development for interacting with APIs and fetching data asynchronously, making it a fundamental tool for creating dynamic and interactive web applications.
+
+Basic Syntax of fetch:
+fetch(url)
+  .then(response => response.json()) // Parse the response as JSON
+  .then(data => console.log(data))   // Handle the data from the response
+  .catch(error => console.error(error)); // Handle errors, if any
+
+
+EXAMPLE OF FETCH:
+
+fetch('https://api.example.com/data')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json(); // Parse JSON data from the response body
+  })
+  .then(data => {
+    console.log(data); // Handle the parsed data
+  })
+  .catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
+
