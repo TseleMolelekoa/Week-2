@@ -127,3 +127,46 @@ fetch('https://api.example.com/data')
     console.error('There has been a problem with your fetch operation:', error);
   });
 
+ # There’s a list of forbidden HTTP headers that we can’t set:
+
+· Accept-Charset, Accept-Encoding
+
+· Access-Control-Request-Headers
+
+· Access-Control-Request-Method
+
+· Connection
+
+· Content-Length
+
+· Cookie, Cookie2
+
+· Date
+
+· DNT
+
+· Expect
+
+· Host
+
+· Keep-Alive
+
+· Origin
+
+· Referer
+
+· TE
+
+· Trailer
+
+· Transfer-Encoding
+
+· Upgrade
+
+· Via
+
+· Proxy-*
+
+· Sec-*
+
+These headers ensure proper and safe HTTP, so they are controlled exclusively by the browser.
