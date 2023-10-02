@@ -8,7 +8,8 @@ name: The name of the file.
 size: The size of the file in bytes.
 type: The MIME type of the file.
 lastModified: A timestamp representing the last modified time of the file.
-Example of creating a File object: const file = new File(["Hello, World!"], "hello.txt", { type: "text/plain" });
+Example of creating a File object: 
+const file = new File(["Hello, World!"], "hello.txt", { type: "text/plain" });
 
 FileReader Object:
 The FileReader object allows you to read the contents of a File or a Blob asynchronously. It provides several methods for reading different types of data, such as text or binary data, from a file.
@@ -19,3 +20,39 @@ readAsDataURL(file): Reads the contents of the specified File or Blob as a data 
 readAsArrayBuffer(file): Reads the contents of the specified File or Blob as an ArrayBuffer.
 readAsBinaryString(file): Reads the contents of the specified File or Blob as a binary string (deprecated).
 abort(): Aborts the read operation.
+
+Example of using FileReader to read the contents of a file:
+const fileInput = document.getElementById('file-input');
+
+fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        console.log(event.target.result); // Contents of the file as text
+    };
+
+    reader.readAsText(file);
+});
+
+The choice of read method depends on which format we prefer, how we are going to use data.
+
+readAsArrayBuffer – for binary files, to do low-level binary operations. For high-level operations, like slicing, File inherits from Blob, so we can call them directly, without reading.
+
+readAsText – for text files, when we’d like to get a string.
+
+readAsDataURL – when we’d like to use this data in src for img or another tag. There’s an alternative to reading a file for that, as discussed in chapter Blob: URL.createObjectURL(file).
+
+As the reading proceeds, there are events:
+
+loadstart – loading started.
+progress – occurs during reading.
+load – no errors, reading complete.
+abort – abort() called.
+error – error has occurred.
+loadend – reading finished with either success or failure.
+When the reading is finished, we can access the result as:
+
+reader.result is the result (if successful)
+reader.error is the error (if failed).
+The most widely used events are for sure load and error.
