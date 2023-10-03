@@ -1,0 +1,35 @@
+# Fetch: Cross-Origin Requests
+
+
+If we make a fetch from an arbitrary web-site, that will probably fail.
+
+The core concept here is origin – a domain/port/protocol triplet.
+
+Cross-origin requests – those sent to another domain (even a subdomain) or protocol or port – require special headers from the remote side. That policy is called “CORS”: Cross-Origin Resource Sharing.
+
+For instance, let’s try fetching http://example.com:
+
+try {
+
+  await fetch('http://example.com');
+
+} catch(err) {
+
+  alert(err); // Failed to fetch
+
+}
+
+Fetch fails, as expected.
+
+Why? A brief history
+Because cross-origin restrictions protect the internet from evil hackers.
+
+Seriously. Let’s make a very brief historical digression.
+
+For many years a script from one site could not access the content of another site.
+
+That simple, yet powerful rule was a foundation of internet security. E.g. a script from the page hacker.com could not access the user’s mailbox at gmail.com. People felt safe.
+
+JavaScript also did not have any special methods to perform network requests at that time. It was a toy language to decorate a web page.
+
+But web developers demanded more power. A variety of tricks were invented to work around the limitation.
