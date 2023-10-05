@@ -36,3 +36,96 @@ But web developers demanded more power. A variety of tricks were invented to wor
 
 
 # Using Forms
+
+The essential difference is that a “simple request” can be made with a <form> or a <script>, without any special methods.
+
+So, even a very old server should be ready to accept a simple request.
+
+Contrary to that, requests with non-standard headers or e.g. method DELETE can’t be created this way. For a long time, JavaScript was unable to do such requests. So an old server may assume that such requests come from a privileged source, “because a webpage is unable to send them”.
+
+When we try to make a non-simple request, the browser sends a special “preflight” request that asks the server – does it agree to accept such cross-origin requests, or not?
+
+And, unless the server explicitly confirms that with headers, a non-simple request is not sent.
+
+Now we’ll go into details. All of them serve a single purpose – to ensure that new cross-origin capabilities are only accessible with explicit permission from the server.
+For cross-origin request, by default JavaScript may only access “simple response headers”:
+
+Cache-Control
+Content-Language
+Content-Type
+Expires
+Last-Modified
+Pragma
+
+Any other response header is forbidden.
+
+Please note: no Content-Length
+
+Please note: there’s no Content-Length header in the list!
+
+This header contains the full response length. So, if we’re downloading something and would like to track the percentage of progress, then additional permission is required to access that header (see below).
+
+To grant JavaScript access to any other response header, the server must list it in the Access-Control-Expose-Headers header.
+
+For example:
+
+200 OK
+Content-Type:text/html; charset=UTF-8
+Content-Length: 12345
+API-Key: 2c9de507f2c54aa1
+Access-Control-Allow-Origin: https://javascript.info
+Access-Control-Expose-Headers: Content-Length,API-Key
+
+With such Access-Control-Expose-Headersheader, the script is allowed to access Content-Length and API-Key headers of the response.
+
+# Non- simple request
+
+We can use any HTTP-method: not just GET/POST, but also PATCH, DELETE and others.
+
+Some time ago no one could even assume that a webpage is able to do such requests. So there may exist web services that treat a non-standard method as a signal: “That’s not a browser”. They can take it into account when checking access rights.
+
+So, to avoid misunderstandings, any “non-simple” request – that couldn’t be done in the old times, the browser does not make such requests right away. Before it sends a preliminary, so-called “preflight” request, asking for permission.
+
+A preflight request uses method OPTIONS and has nobody.
+
+Access-Control-Request-Method header has the requested method.
+Access-Control-Request-Headers header provides a comma-separated list of non-simple HTTP-headers.
+If the server agrees to serve the requests, then it should respond with status 200, without body.
+
+The response header Access-Control-Allow-Methods must have the allowed method.
+The response header Access-Control-Allow-Headers must have a list of allowed headers.
+Additionally, the header Access-Control-Max-Age may specify a number of seconds to cache the permissions. So the browser won’t have to send a preflight for subsequent requests that satisfy given permissions.
+
+# crentials
+
+A cross-origin request by default does not bring any credentials (cookies or HTTP authentication).
+
+That’s uncommon for HTTP-requests. Usually, a request to http://site.com is accompanied by all cookies from that domain. But cross-domain requests made by JavaScript methods are an exception.
+
+For example, fetch('http://another.com') does not send any cookies, even those that belong to another.com domain.
+
+Why?
+
+That’s because a request with credentials is much more powerful than an anonymous one. If allowed, it grants JavaScript the full power to act and access sensitive information on behalf of a user.
+
+Does the server really trust pages from Origin that much? Then it must explicitly allow requests with credentials with an additional header.
+
+To send credentials, we need to add the option credentials: "include", like this:
+
+fetch('http://another.com', {
+
+  credentials: "include"
+
+});
+
+Now fetch sends cookies originating from another.com without request to that site.
+
+If the server wishes to accept the request with credentials, it should add a header Access-Control-Allow-Credentials: true to the response, in addition to Access-Control-Allow-Origin.
+
+For example:
+
+200 OK
+Access-Control-Allow-Origin: https://javascript.info
+Access-Control-Allow-Credentials: true
+
+Please note: Access-Control-Allow-Origin is prohibited from using a star * for requests with credentials. There must be exactly the origin there, like above. That’s an additional safety measure, to ensure that the server really knows who it trusts.
